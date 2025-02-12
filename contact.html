@@ -139,7 +139,7 @@
 
         </div>
 
-        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="600">
+        <form id="contact-form" action="https://formspree.io/f/myzkdnel" method="POST" class="php-email-form" data-aos="fade-up" data-aos-delay="600">
           <div class="row gy-4">
 
             <div class="col-md-6">
@@ -163,7 +163,7 @@
               <div class="error-message"></div>
               <div class="sent-message">Deixe sua mensagem, obrigada!</div>
 
-              <button type="submit">Enviar mensagem</button>
+              <button id="submit-btn" type="submit">Enviar mensagem</button>
             </div>
 
           </div>
@@ -219,7 +219,40 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById("contact-form").addEventListener("submit", async function (event) {
+        event.preventDefault(); // Evita que o formulário seja enviado da maneira tradicional
 
+        const form = event.target;
+        const formData = new FormData(form);
+        const submitButton = document.getElementById("submit-btn");
+
+        // Desativa o botão para evitar múltiplos envios
+        submitButton.disabled = true;
+        submitButton.textContent = "Enviando...";
+
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                // Redireciona para a página de agradecimento
+                window.location.href = "thanks.html";
+            } else {
+                alert("Erro ao enviar o formulário. Tente novamente.");
+                submitButton.disabled = false;
+                submitButton.textContent = "Enviar mensagem";
+            }
+        } catch (error) {
+            alert("Erro ao conectar com o servidor.");
+            submitButton.disabled = false;
+            submitButton.textContent = "Enviar mensagem";
+        }
+    });
+</script>
 </body>
 
 </html>
